@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import "leaflet/dist/leaflet.css"
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
