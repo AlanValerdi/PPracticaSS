@@ -4,8 +4,11 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbList } from "@/components/ui/brea
 import { Separator } from "@/components/ui/separator"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 
+
+
 export default async function AreasPage({ params }: { params: Promise<{ areaId: string }> }) {
     const { areaId } = await params
+
 
     return (
         <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
@@ -29,10 +32,13 @@ export default async function AreasPage({ params }: { params: Promise<{ areaId: 
                             <KbdSearchField />
                         </div>
                     </header>
-                    <div className="flex flex-col">
-                        <h1 className="relative z-10 max-w-full text-[clamp(22px,3cqi,30px)] leading-none font-semibold tracking-[-0.055em] wrap-break-word">
-                            {areaId}
+                    <div className="flex flex-col items-center justify-center">
+                        <h1 className="px-14 pt-8 p-4 max-w-full text-[clamp(22px,3cqi,30px)] leading-none font-semibold tracking-[-0.055em] wrap-break-word">
+                            {areaId.toUpperCase()}
                         </h1>
+                    </div>
+                    <div className="flex">
+                        
                     </div>
 
                 </SidebarInset>
