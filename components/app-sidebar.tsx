@@ -12,22 +12,34 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { GalleryVerticalEndIcon, HomeIcon, LucideIcon } from "lucide-react"
+import { GalleryVerticalEndIcon, HomeIcon, LucideIcon, MapIcon } from "lucide-react"
 import { MenuItem } from "@base-ui/react"
 
 type DataNav = {
-   "title": string,
-   "url": string,
-   icon?: LucideIcon,
-   items?: [],
+  "id": number,
+  "title": string,
+  "url": string,
+  icon?: LucideIcon,
+  items?: [],
 }
 
-const data: DataNav = {
-  title: "Inicio",
-  url: "/",
-  icon: HomeIcon,
-  items: []
-}
+const data: DataNav[] = [
+  {
+    id: 1,
+    title: "Inicio",
+    url: "/",
+    icon: HomeIcon,
+    items: []
+  },
+  {
+    id: 2,
+    title: "Mapa",
+    url: "/mapa",
+    icon: MapIcon,
+    items: []
+  },
+]
+
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -50,16 +62,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton
 
-                render={<a href={data.url} className="font-medium" />}
-              >
-                {data.icon && <data.icon/>}
-                {data.title}
-              </SidebarMenuButton>
-             
-            </SidebarMenuItem>
+            {data.map((item)=> (
+              <SidebarMenuItem key={item.id}>
+                <SidebarMenuButton render={<a href={item.url} className="font-medium"/>}>
+                  {item.icon && <item.icon/>}
+                  {item.title}
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+
+
+      
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>

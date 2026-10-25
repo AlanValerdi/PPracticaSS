@@ -1,10 +1,13 @@
 import { AppSidebar } from "@/components/app-sidebar";
+import KbdSearchField from "@/components/kbd-search";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import Link from "next/link";
+
 
 
 type Areas = {
@@ -19,7 +22,7 @@ type Facultad = {
 };
 
 
-function FacultadCard({ facultad, toneIndex }: { facultad: Facultad; toneIndex: number }) {
+function FacultadCard({ facultad, toneIndex}: { facultad: Facultad; toneIndex: number, }) {
   return (
     <Card className="gap-0 rounded-2xl border border-border p-4 shadow-none ring-0">
       <div
@@ -32,13 +35,13 @@ function FacultadCard({ facultad, toneIndex }: { facultad: Facultad; toneIndex: 
         <h2 className="relative z-10 max-w-full text-[clamp(22px,3cqi,30px)] leading-none font-semibold tracking-[-0.055em] wrap-break-word">
           {facultad.Nombre}
         </h2>
-        <Button variant="default">Conoce las ofertas</Button>
+        <Button variant="default" nativeButton={false} render={<Link href={`/facultad/${facultad.id}`}/>}>Conoce las ofertas</Button>
       </div>
     </Card>
   );
 }
 
-function CarouselCards({ areas, facultades }: { areas: Areas, facultades: Facultad[] }) {
+function CarouselCards({ areas, facultades, }: { areas: Areas, facultades: Facultad[] }) {
   return (
     <div className="flex gap-4 flex-col">
       <div className="p-4 pt-8 px-14">
@@ -51,8 +54,8 @@ function CarouselCards({ areas, facultades }: { areas: Areas, facultades: Facult
         <Carousel>
           <CarouselContent>
             {facultades.map((facultad, index) => (
-              <CarouselItem key={facultad.id} className="min-w-0 basis-full sm:basis-1/3 lg:basis-1/4">
-                <FacultadCard facultad={facultad} toneIndex={index} />
+              <CarouselItem key={facultad.id} className="min-w-0 basis-full sm:basis-1/2 lg:basis-1/5 md:basis-1/3 ">
+                <FacultadCard facultad={facultad} toneIndex={index} areaId={areas.id} />
               </CarouselItem>
             ))}
 
@@ -103,10 +106,13 @@ export default function Home() {
                   <BreadcrumbItem>
                     Inicio
                   </BreadcrumbItem>
-
+               
                 </BreadcrumbList>
               </Breadcrumb>
             </div>
+              <div className="ml-auto w-36 max-w-xs sm:w-64 px-2">
+                  <KbdSearchField/>
+              </div>
           </header>
           {dataAreas.map((areas)=> (
             <CarouselCards key={areas.id} areas={areas} facultades={areas.facultades} />
