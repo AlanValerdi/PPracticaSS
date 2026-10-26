@@ -3,11 +3,13 @@ import KbdSearchField from "@/components/kbd-search"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-
-
+import { columns } from "./columns"
+import { getDataTable } from "@/lib/api/dataTable"
+import { DataTable } from "./data-table"
 
 export default async function AreasPage({ params }: { params: Promise<{ areaId: string }> }) {
     const { areaId } = await params
+    const { area, offers } = await getDataTable(areaId)
 
 
     return (
@@ -34,11 +36,11 @@ export default async function AreasPage({ params }: { params: Promise<{ areaId: 
                     </header>
                     <div className="flex flex-col items-center justify-center">
                         <h1 className="px-14 pt-8 p-4 max-w-full text-[clamp(22px,3cqi,30px)] leading-none font-semibold tracking-[-0.055em] wrap-break-word">
-                            {areaId.toUpperCase()}
+                            {area.name}
                         </h1>
                     </div>
-                    <div className="flex">
-                        
+                    <div className="min-w-0 p-6">
+                        <DataTable key={area.uuid} columns={columns} data={offers} />
                     </div>
 
                 </SidebarInset>
