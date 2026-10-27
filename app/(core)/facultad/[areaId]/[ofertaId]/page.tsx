@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation"
-import { Bookmark, Send } from "lucide-react"
+import { Bookmark, MapPin, Send } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { getDataTable } from "@/lib/api/dataTable"
 import { getOffer } from "@/lib/api/offer"
@@ -178,13 +178,15 @@ export default async function OfertaPage({
         (detail) => detail.areaUuid === area.uuid
     )
 
-    
+
 
 
 
     const actividades = areaDetail?.activities.trim()
 
     const competencias = areaDetail?.competencies.trim()
+    const address = offer.supervisor.workAddress.trim()
+    const showLocation = address !== "" && !/\bvirtual\b/i.test(address)
 
     return (
         <div className="min-w-0 w-full p-6 space-y-4">
@@ -197,24 +199,44 @@ export default async function OfertaPage({
                     <span>Revalidado: {offer.summary.revalidated ? "Sí" : "No"}</span>
                 </div>
             </div>
-            <div className="flex flex-wrap gap-2">
-                <Button type="button" variant="outline">
-                    <Bookmark aria-hidden="true" />
-                    Guardar
-                </Button>
-                <Button
-                    nativeButton={false}
-                    render={
-                        <a
-                            href={`mailto:${offer.supervisor.email.trim()}?subject=${encodeURIComponent(
-                                `Solicitud para el programa: ${offer.listing.programa}`
-                            )}`}
-                        />
-                    }
-                >
-                    <Send aria-hidden="true" />
-                    Aplicar
-                </Button>
+            <div className="flex flex-wrap gap-2  py-2 items-center">
+                <div className="flex gap-2 py-2">
+                    <Button type="button" variant="outline">
+                        <Bookmark aria-hidden="true" />
+                        Guardar
+                    </Button>
+                    <Button
+                        nativeButton={false}
+                        render={
+                            <a
+                                href={`mailto:${offer.supervisor.email.trim()}?subject=${encodeURIComponent(
+                                    `Solicitud para el programa: ${offer.listing.programa}`
+                                )}`}
+                            />
+                        }
+                    >
+                        <Send aria-hidden="true" />
+                        Aplicar
+                    </Button>
+                </div>
+                {showLocation && (
+                    <Button
+                        nativeButton={false}
+                        variant="link"
+                        render={
+                            <a
+                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            />
+                        }
+                    >
+                        <MapPin aria-hidden="true" />
+                        Ver ubicación
+                    </Button>
+                )}
+
+
             </div>
             <div className="grid grid-cols-2 gap-4">
                 {[

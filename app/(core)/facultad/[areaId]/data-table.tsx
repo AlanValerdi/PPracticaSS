@@ -3,7 +3,8 @@
 import { useTable, type ColumnDef, type RowData } from "@tanstack/react-table"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { features, type DataTableFeatures } from "./data-table-features"
-import { useParams, useRouter } from "next/navigation"
+import Link from "next/link"
+import { useParams } from "next/navigation"
 
 interface DataTableProps<TData extends RowData & {uuid:string}> {
   columns: ColumnDef<DataTableFeatures, TData>[]
@@ -11,7 +12,6 @@ interface DataTableProps<TData extends RowData & {uuid:string}> {
 }
 
 export function DataTable<TData extends RowData & {uuid: string}>({ columns, data }: DataTableProps<TData>) {
-  const router = useRouter()
   const { areaId } = useParams<{ areaId: string }>()
   const table = useTable({ features, data, columns })
 
@@ -31,18 +31,24 @@ export function DataTable<TData extends RowData & {uuid: string}>({ columns, dat
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className="cursor-pointer" tabIndex={0} onClick={
-                () => router.push(
-                  `/facultad/${encodeURIComponent(areaId)}/${encodeURIComponent(row.original.uuid)}`
-                )
-              }
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell className="p-4" key={cell.id}><table.FlexRender cell={cell} /></TableCell>
-                ))}
-              </TableRow>
-            ))
+            table.getRowModel().rows.map((row) => {
+              const href = `/facultad/${encodeURIComponent(areaId)}/${encodeURIComponent(row.original.uuid)}`
+
+              return (
+                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell className="p-0" key={cell.id}>
+                      <Link
+                        href={href}
+                        className="block p-4 focus-visible:outline-2 focus-visible:outline-ring"
+                      >
+                        <table.FlexRender cell={cell} />
+                      </Link>
+                    </TableCell>
+                  ))}
+                </TableRow>
+              )
+            })
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
