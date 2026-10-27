@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {
@@ -11,6 +10,21 @@ const nextConfig: NextConfig = {
         as: "*.css",
       },
     },
+  },
+
+  async rewrites() {
+    const baseUrl = process.env.API_BASE_URL;
+
+    if (!baseUrl) {
+      throw new Error("Falta configurar API_BASE_URL");
+    }
+
+    return [
+      {
+        source: "/api/backend/:path*",
+        destination: `${baseUrl.replace(/\/+$/, "")}/api/v1/:path*`,
+      },
+    ];
   },
 };
 
