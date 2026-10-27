@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 
 import {
   Sidebar,
@@ -13,7 +14,6 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { GalleryVerticalEndIcon, HomeIcon, LucideIcon, MapIcon } from "lucide-react"
-import { MenuItem } from "@base-ui/react"
 
 type DataNav = {
   "id": number,
@@ -47,7 +47,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" render={<a href="#" />}>
+            <SidebarMenuButton size="lg" render={<Link href="/" />}>
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 <GalleryVerticalEndIcon className="size-4" />
               </div>
@@ -65,7 +65,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
             {data.map((item)=> (
               <SidebarMenuItem key={item.id}>
-                <SidebarMenuButton render={<a href={item.url} className="font-medium"/>}>
+                <SidebarMenuButton render={<Link href={item.url} className="font-medium" />}>
                   {item.icon && <item.icon/>}
                   {item.title}
                 </SidebarMenuButton>

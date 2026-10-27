@@ -1,11 +1,6 @@
-import { AppSidebar } from "@/components/app-sidebar";
-import KbdSearchField from "@/components/kbd-search";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbList } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Separator } from "@/components/ui/separator";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { getCatalog } from "@/lib/api/catalog";
 import { Area } from "@/lib/types/typesList";
 import Link from "next/link";
@@ -35,7 +30,7 @@ function AreaCard({ area, toneIndex}: { area: Area; toneIndex: number, }) {
 
 function CarouselCards({ title, areas }: { title: string, areas: Area[] }) {
   return (
-    <div className="flex gap-4 flex-col">
+    <div className="flex min-w-0 w-full flex-col gap-4">
       <div className="p-4 pt-8 px-14">
         <h1 className="max-w-full text-[clamp(22px,3cqi,30px)] leading-none font-semibold tracking-[-0.055em] wrap-break-word">
             {title.toUpperCase()}
@@ -66,27 +61,8 @@ export default async function Home() {
 
 
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <SidebarProvider>
-        <AppSidebar />
-        <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b">
-            <div className="flex items-center gap-2 px-3">
-              <SidebarTrigger />
-              <Separator orientation="vertical" className="mr-2 " />
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem>
-                    Inicio
-                  </BreadcrumbItem>
-               
-                </BreadcrumbList>
-              </Breadcrumb>
-            </div>
-              <div className="ml-auto w-36 max-w-xs sm:w-64 px-2">
-                  <KbdSearchField/>
-              </div>
-          </header>
+    <div className="flex min-w-0 w-full flex-1 flex-col bg-zinc-50 font-sans dark:bg-black">
+      
           {[...catalog.sections].sort((a, b) => a.order - b.order).map((section) => (
             <CarouselCards key={section.id} title={section.name} areas={catalog.areas.filter(
               (area) => area.sectionId === section.id
@@ -94,8 +70,6 @@ export default async function Home() {
           ))
           }
 
-        </SidebarInset>
-      </SidebarProvider>
 
 
     </div>
