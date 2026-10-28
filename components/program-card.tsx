@@ -7,11 +7,12 @@ type ProgramCardProps = {
   children: ReactNode;
   toneIndex: number;
   className?: string;
+  cardClassName?: string;
 };
 
-export function ProgramCard({ children, toneIndex, className }: ProgramCardProps) {
+export function ProgramCard({ children, toneIndex, className, cardClassName }: ProgramCardProps) {
   return (
-    <Card className="h-full min-w-0 gap-0 rounded-2xl border border-border p-4 shadow-none ring-0">
+    <Card className={cn("h-full min-w-0 gap-0 rounded-2xl border border-border p-4 shadow-none ring-0", cardClassName)}>
       <div
         className={cn(
           "relative isolate flex min-h-[280px] flex-1 flex-col overflow-hidden rounded-2xl p-5 text-[#14171B] @container",

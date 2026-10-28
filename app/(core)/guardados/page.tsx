@@ -69,7 +69,7 @@ export default async function GuardadosPage() {
                     )}
                   </div>
 
-                  <div className="mt-auto flex flex-wrap items-center gap-2">
+                  <div className="mt-auto grid grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center">
                     {detailHref ? (
                       <Button size="sm" nativeButton={false} render={<Link href={detailHref} />}>
                         Ver oferta
@@ -77,7 +77,7 @@ export default async function GuardadosPage() {
                     ) : (
                       <Button type="button" size="sm" disabled>Ver oferta</Button>
                     )}
-                    <div className="ml-auto flex flex-wrap justify-end gap-2">
+                    <div className="grid grid-cols-1 gap-2 min-[390px]:grid-cols-2 sm:ml-auto sm:flex sm:flex-wrap sm:justify-end">
                       {offer.isActive && email ? (
                         <Button
                           variant="outline"

@@ -26,6 +26,8 @@ function getBreadcrumbs(pathname: string): BreadcrumbEntry[] {
     entries.push({ label: "Mapa" });
   } else if (segments.length === 1 && segments[0] === "guardados") {
     entries.push({ label: "Guardados" });
+  } else if (segments.length === 1 && segments[0] === "analisis-cv") {
+    entries.push({ label: "Ofertas sugeridas" });
   } else if (segments.length === 1 && segments[0] === "dashboard") {
     entries.push({ label: "Dashboard" });
   } else if (

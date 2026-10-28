@@ -15,7 +15,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { Bookmark, GalleryVerticalEndIcon, HomeIcon, LucideIcon, MapIcon, SaveIcon } from "lucide-react"
+import { Bookmark, GalleryVerticalEndIcon, HomeIcon, LucideIcon, MapIcon, SaveIcon, WandSparklesIcon } from "lucide-react"
 import { NavUser } from "./nav-user"
 
 type DataNav = {
@@ -46,6 +46,13 @@ const data: DataNav[] = [
     title: "Guardados",
     url: "/guardados",
     icon: Bookmark,
+    items: []
+  },
+  {
+    id: 4,
+    title: "Ofertas sugeridas",
+    url: "/analisis-cv",
+    icon: WandSparklesIcon,
     items: []
   }
 ]
