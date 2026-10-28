@@ -1,21 +1,25 @@
 "use client"
 
 import { useTable, type ColumnDef, type RowData } from "@tanstack/react-table"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { features, type DataTableFeatures } from "./data-table-features"
 import Link from "next/link"
 import { useParams } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { ChevronLeft, ChevronRight } from "lucide-react"
+import { Separator } from "@/components/ui/separator"
 
-interface DataTableProps<TData extends RowData & {uuid:string}> {
+interface DataTableProps<TData extends RowData & { uuid: string }> {
   columns: ColumnDef<DataTableFeatures, TData>[]
   data: TData[]
 }
 
-export function DataTable<TData extends RowData & {uuid: string}>({ columns, data }: DataTableProps<TData>) {
+export function DataTable<TData extends RowData & { uuid: string }>({ columns, data }: DataTableProps<TData>) {
   const { areaId } = useParams<{ areaId: string }>()
   const table = useTable({ features, data, columns })
 
   return (
+
     <div className="overflow-hidden rounded-md border">
       <Table>
         <TableHeader>
@@ -58,6 +62,43 @@ export function DataTable<TData extends RowData & {uuid: string}>({ columns, dat
           )}
         </TableBody>
       </Table>
+          <TableFooter className="flex items-center gap-4 w-full px-2">
+        <div>
+          <p className="text-[12px] sm:text-sm ">
+            Pagina {table.state.pagination.pageIndex + 1} de {table.getPageCount()}
+          </p>
+        </div>
+
+
+        <div className="ml-auto flex justify-center space-x-2 py-4">
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <ChevronLeft />
+            Anterior
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Siguiente
+            <ChevronRight />
+          </Button>
+        </div>
+
+
+
+      </TableFooter>
+
     </div>
+      
+
+
   )
 }

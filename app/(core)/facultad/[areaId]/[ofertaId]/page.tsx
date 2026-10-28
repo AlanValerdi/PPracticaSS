@@ -1,6 +1,8 @@
+import { Suspense } from "react"
 import { notFound } from "next/navigation"
-import { Bookmark, MapPin, Send } from "lucide-react"
+import { MapPin, Send } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { OfferSaveControl } from "@/components/offer-save-control"
 import { getDataTable } from "@/lib/api/dataTable"
 import { getOffer } from "@/lib/api/offer"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -201,10 +203,9 @@ export default async function OfertaPage({
             </div>
             <div className="flex flex-wrap gap-2  py-2 items-center">
                 <div className="flex gap-2 py-2">
-                    <Button type="button" variant="outline">
-                        <Bookmark aria-hidden="true" />
-                        Guardar
-                    </Button>
+                    <Suspense fallback={<Button type="button" variant="outline" disabled>Guardar…</Button>}>
+                        <OfferSaveControl key={offer.uuid} offerUuid={offer.uuid} />
+                    </Suspense>
                     <Button
                         nativeButton={false}
                         render={
@@ -218,23 +219,24 @@ export default async function OfertaPage({
                         <Send aria-hidden="true" />
                         Aplicar
                     </Button>
+                    {showLocation && (
+                        <Button
+                            nativeButton={false}
+                            variant="link"
+                            render={
+                                <a
+                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                />
+                            }
+                        >
+                            <MapPin aria-hidden="true" />
+                            Ver ubicación
+                        </Button>
+                    )}
                 </div>
-                {showLocation && (
-                    <Button
-                        nativeButton={false}
-                        variant="link"
-                        render={
-                            <a
-                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            />
-                        }
-                    >
-                        <MapPin aria-hidden="true" />
-                        Ver ubicación
-                    </Button>
-                )}
+
 
 
             </div>
