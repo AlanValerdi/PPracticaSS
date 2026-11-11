@@ -1,13 +1,12 @@
 "use client"
 
 import { useTable, type ColumnDef, type RowData } from "@tanstack/react-table"
-import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { features, type DataTableFeatures } from "./data-table-features"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { Separator } from "@/components/ui/separator"
 
 interface DataTableProps<TData extends RowData & { uuid: string }> {
   columns: ColumnDef<DataTableFeatures, TData>[]
@@ -62,10 +61,10 @@ export function DataTable<TData extends RowData & { uuid: string }>({ columns, d
           )}
         </TableBody>
       </Table>
-          <TableFooter className="flex items-center gap-4 w-full px-2">
+      <nav aria-label="Paginación de ofertas" className="flex items-center gap-4 w-full border-t bg-muted/50 px-2 font-medium">
         <div>
           <p className="text-[12px] sm:text-sm ">
-            Pagina {table.state.pagination.pageIndex + 1} de {table.getPageCount()}
+            Página {table.state.pagination.pageIndex + 1} de {table.getPageCount()}
           </p>
         </div>
 
@@ -94,7 +93,7 @@ export function DataTable<TData extends RowData & { uuid: string }>({ columns, d
 
 
 
-      </TableFooter>
+      </nav>
 
     </div>
       

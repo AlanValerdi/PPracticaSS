@@ -251,6 +251,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/recommendations/analyze": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Analyze */
+        post: operations["analyze_api_v1_recommendations_analyze_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -282,6 +299,13 @@ export interface components {
             area: components["schemas"]["Area"];
             /** Offers */
             offers: components["schemas"]["Offer"][];
+        };
+        /** Body_analyze_api_v1_recommendations_analyze_post */
+        Body_analyze_api_v1_recommendations_analyze_post: {
+            /** Cv */
+            cv: string;
+            /** Areaslug */
+            areaSlug: string;
         };
         /** Catalog */
         Catalog: {
@@ -504,6 +528,48 @@ export interface components {
             error?: string | null;
             /** Responseexcerpt */
             responseExcerpt?: string | null;
+        };
+        /** ProfileSummary */
+        ProfileSummary: {
+            /** Education */
+            education?: string | null;
+            /** Experience */
+            experience?: string | null;
+            /** Skills */
+            skills?: string | null;
+            /** Tools */
+            tools?: string | null;
+            /** Languages */
+            languages?: string | null;
+            /** Interests */
+            interests?: string | null;
+        };
+        /** RecommendationAnalysis */
+        RecommendationAnalysis: {
+            profile: components["schemas"]["ProfileSummary"] | null;
+            /** Recommendations */
+            recommendations: components["schemas"]["RecommendedOffer"][];
+            /** Message */
+            message?: string | null;
+        };
+        /** RecommendedOffer */
+        RecommendedOffer: {
+            /** Offeruuid */
+            offerUuid: string;
+            /** Areaslug */
+            areaSlug: string;
+            /** Title */
+            title: string;
+            /** Folio */
+            folio: string;
+            /** Remuneration */
+            remuneration: string;
+            /** Reason */
+            reason: string;
+            /** Supervisoremail */
+            supervisorEmail: string;
+            /** Workaddress */
+            workAddress: string;
         };
         /** SavedOfferListItem */
         SavedOfferListItem: {
@@ -985,6 +1051,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SavedOfferListItem"][];
+                };
+            };
+        };
+    };
+    analyze_api_v1_recommendations_analyze_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_analyze_api_v1_recommendations_analyze_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecommendationAnalysis"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

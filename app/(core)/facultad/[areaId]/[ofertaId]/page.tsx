@@ -202,7 +202,7 @@ export default async function OfertaPage({
                 </div>
             </div>
             <div className="flex flex-wrap gap-2  py-2 items-center">
-                <div className="flex gap-2 py-2">
+                <div className="flex min-w-0 flex-wrap items-center gap-2 py-2">
                     <Suspense fallback={<Button type="button" variant="outline" disabled>Guardar…</Button>}>
                         <OfferSaveControl key={offer.uuid} offerUuid={offer.uuid} />
                     </Suspense>

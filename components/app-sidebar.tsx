@@ -15,48 +15,9 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { Bookmark, GalleryVerticalEndIcon, HomeIcon, LucideIcon, MapIcon, SaveIcon, WandSparklesIcon } from "lucide-react"
+import { GalleryVerticalEndIcon } from "lucide-react"
+import { APP_NAV_ITEMS } from "@/lib/navigation"
 import { NavUser } from "./nav-user"
-
-type DataNav = {
-  "id": number,
-  "title": string,
-  "url": string,
-  icon?: LucideIcon,
-  items?: [],
-}
-
-const data: DataNav[] = [
-  {
-    id: 1,
-    title: "Inicio",
-    url: "/",
-    icon: HomeIcon,
-    items: []
-  },
-  {
-    id: 2,
-    title: "Mapa",
-    url: "/mapa",
-    icon: MapIcon,
-    items: []
-  },
-  {
-    id: 3,
-    title: "Guardados",
-    url: "/guardados",
-    icon: Bookmark,
-    items: []
-  },
-  {
-    id: 4,
-    title: "Ofertas sugeridas",
-    url: "/analisis-cv",
-    icon: WandSparklesIcon,
-    items: []
-  }
-]
-
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
@@ -90,7 +51,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarGroup>
           <SidebarMenu>
 
-            {data.map((item) => (
+            {APP_NAV_ITEMS.map((item) => (
               <SidebarMenuItem key={item.id}>
                 <SidebarMenuButton render={<Link href={item.url} className="font-medium" />}>
                   {item.icon && <item.icon />}
