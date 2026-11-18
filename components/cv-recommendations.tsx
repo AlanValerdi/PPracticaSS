@@ -39,6 +39,7 @@ function CvRecommendations({ areas, initiallySavedIds, savedLookupFailed }: Prop
   const inputRef = useRef<HTMLInputElement>(null);
   const requestRef = useRef<AbortController | null>(null);
   const recommendations = result?.recommendations ?? [];
+  const areaNames = new Map(areas.map((area) => [area.slug, `${area.name} ${area.slug}`]));
   const profile = result?.profile;
   const summary = [
     { label: "Formación", value: profile?.education },
@@ -213,15 +214,15 @@ function CvRecommendations({ areas, initiallySavedIds, savedLookupFailed }: Prop
                   {!recommendations.length && <p role="status" className="text-sm text-muted-foreground">{result?.message || "No se encontraron ofertas con afinidad suficiente."}</p>}
                   {recommendations.map((offer, index) => (
                     <article key={offer.offerUuid} className="space-y-3">
-                      <ProgramCard toneIndex={index} cardClassName="p-2 sm:p-4" className="min-h-[240px] p-3 sm:min-h-[280px] sm:p-5">
+                      <ProgramCard type={areaNames.get(offer.areaSlug) ?? offer.areaSlug} toneIndex={index} cardClassName="p-2 sm:p-4" className="min-h-[240px] p-3 sm:min-h-[280px] sm:p-5">
                         <div className="relative z-10 flex flex-1 flex-col gap-4">
                           <div className="flex items-start justify-between gap-2 sm:gap-4">
                             <div className="min-w-0 space-y-1"><p className="text-sm font-semibold wrap-break-word">Folio {offer.folio}</p><p className="text-sm wrap-break-word">{offer.remuneration.trim() || "Apoyo económico no especificado"}</p></div>
-                            <SaveOfferButton offerUuid={offer.offerUuid} isAuthenticated initiallySaved={initiallySavedIds.includes(offer.offerUuid)} initialError={savedLookupFailed ? "No se pudo comprobar el guardado. Puedes intentar guardar." : undefined} />
+                            <SaveOfferButton offerUuid={offer.offerUuid} areaSlug={offer.areaSlug} isAuthenticated initiallySaved={initiallySavedIds.includes(offer.offerUuid)} initialError={savedLookupFailed ? "No se pudo comprobar el guardado. Puedes intentar guardar." : undefined} />
                           </div>
                           <div className="flex min-h-24 flex-1 items-center justify-center py-4 text-center sm:min-h-28 sm:py-6"><h3 className="max-w-full text-lg leading-tight font-semibold tracking-tight wrap-break-word sm:text-[clamp(22px,3cqi,30px)] sm:tracking-[-0.055em]">{offer.title}</h3></div>
                           <div className="mt-auto grid grid-cols-1 gap-2 min-[360px]:grid-cols-2 sm:flex sm:flex-wrap sm:items-center">
-                            <Button className="min-[360px]:col-span-2" size="sm" nativeButton={false} render={<Link href={`/facultad/${encodeURIComponent(offer.areaSlug)}/${encodeURIComponent(offer.offerUuid)}`} />}>Ver oferta</Button>
+                            <Button className="min-[360px]:col-span-2 bg-[var(--program-accent)] text-white hover:bg-[var(--program-accent)] hover:brightness-90" size="sm" nativeButton={false} render={<Link href={`/facultad/${encodeURIComponent(offer.areaSlug)}/${encodeURIComponent(offer.offerUuid)}`} />}>Ver oferta</Button>
                             {offer.supervisorEmail.trim() && <Button className="sm:ml-auto" size="sm" variant="outline" nativeButton={false} render={<a href={`mailto:${offer.supervisorEmail.trim()}?subject=${encodeURIComponent(`Solicitud para el programa: ${offer.title}`)}`} />}><Send aria-hidden="true" />Aplicar</Button>}
                             {offer.workAddress.trim() && !/\bvirtual\b/i.test(offer.workAddress) && <Button size="sm" variant="outline" nativeButton={false} render={<a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(offer.workAddress)}`} target="_blank" rel="noopener noreferrer" />}><MapPin aria-hidden="true" />Ver ubicación</Button>}
                           </div>

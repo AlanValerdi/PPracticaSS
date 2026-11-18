@@ -11,6 +11,8 @@ type SaveOfferButtonProps = {
   isAuthenticated: boolean;
   initiallySaved: boolean;
   initialError?: string;
+  areaSlug?: string;
+  canUpdateArea?: boolean;
 };
 
 export function SaveOfferButton({
@@ -18,9 +20,11 @@ export function SaveOfferButton({
   isAuthenticated,
   initiallySaved,
   initialError,
+  areaSlug,
+  canUpdateArea = false,
 }: SaveOfferButtonProps) {
   const [state, action, isPending] = useActionState<SaveOfferState>(
-    async () => saveOfferAction(offerUuid),
+    async () => saveOfferAction(offerUuid, areaSlug),
     {
       status: initiallySaved ? "saved" : initialError ? "error" : "idle",
       message: initialError,
@@ -37,10 +41,11 @@ export function SaveOfferButton({
   }
 
   const isSaved = initiallySaved || state.status === "saved";
+  const shouldUpdateArea = canUpdateArea && state.message !== "Área asociada actualizada.";
 
   return (
     <form action={action} className="flex flex-col items-start gap-2" aria-busy={isPending}>
-      <Button type="submit" variant="outline" disabled={isPending || isSaved}>
+      <Button type="submit" variant="outline" disabled={isPending || (isSaved && !shouldUpdateArea)}>
         {isPending ? (
           <LoaderCircle className="animate-spin" aria-hidden="true" />
         ) : isSaved ? (
@@ -48,7 +53,7 @@ export function SaveOfferButton({
         ) : (
           <Bookmark aria-hidden="true" />
         )}
-        {isPending ? "Guardando…" : isSaved ? "Guardada" : "Guardar"}
+        {isPending ? "Guardando…" : shouldUpdateArea ? "Actualizar facultad" : isSaved ? "Guardada" : "Guardar"}
       </Button>
       {state.status === "error" && (
         <p className="max-w-sm text-sm text-destructive" role="alert">{state.message}</p>

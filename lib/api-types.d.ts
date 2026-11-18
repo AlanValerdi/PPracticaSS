@@ -590,6 +590,8 @@ export interface components {
             isActive: boolean;
             /** Areaslug */
             areaSlug: string | null;
+            /** Areaselected */
+            areaSelected: boolean;
             /** Supervisoremail */
             supervisorEmail: string;
             /** Workaddress */
@@ -968,7 +970,9 @@ export interface operations {
     };
     save_offer_api_v1_saved_offers__offer_uuid__post: {
         parameters: {
-            query?: never;
+            query?: {
+                areaSlug?: string | null;
+            };
             header?: never;
             path: {
                 offer_uuid: string;

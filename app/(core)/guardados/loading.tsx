@@ -10,7 +10,7 @@ export default function Loading() {
           <Skeleton className="h-9 w-40 max-w-full" />
           <Skeleton className="h-5 w-80 max-w-full" />
         </div>
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 2xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 group-has-[[data-slot=sidebar][data-state=expanded]]/sidebar-wrapper:md:grid-cols-1 group-has-[[data-slot=sidebar][data-state=expanded]]/sidebar-wrapper:xl:grid-cols-2 group-has-[[data-slot=sidebar][data-state=expanded]]/sidebar-wrapper:2xl:grid-cols-3">
           {Array.from({ length: 6 }, (_, index) => (
             <Card key={index} className="gap-0 rounded-2xl border p-4 shadow-none ring-0">
               <div className="flex min-h-80 flex-col gap-4 rounded-2xl bg-muted/40 p-5">

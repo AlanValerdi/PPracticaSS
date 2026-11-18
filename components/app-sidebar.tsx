@@ -2,6 +2,8 @@
 
 import * as React from "react"
 import Link from "next/link"
+import Image from "next/image"
+import { usePathname } from "next/navigation"
 import { useAuth } from "@/hooks/use-auth"
 
 import {
@@ -15,12 +17,36 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { GalleryVerticalEndIcon } from "lucide-react"
 import { APP_NAV_ITEMS } from "@/lib/navigation"
 import { NavUser } from "./nav-user"
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+function SidebarNavigation({ pathname }: { pathname?: string }) {
+  return (
+    <SidebarGroup className="px-3 py-5">
+      <SidebarMenu className="gap-2">
+        {APP_NAV_ITEMS.map((item) => (
+          <SidebarMenuItem key={item.id}>
+            <SidebarMenuButton
+              isActive={pathname !== undefined && (item.url === "/" ? pathname === "/" : pathname === item.url || pathname.startsWith(`${item.url}/`))}
+              className="h-12 gap-3 rounded-xl px-3 text-lg font-medium data-active:bg-sidebar-primary data-active:text-sidebar-primary-foreground data-active:shadow-sm [&_svg]:size-5"
+              render={<Link href={item.url} className="font-medium" />}
+            >
+              {item.icon && <item.icon strokeWidth={1.9} />}
+              {item.title}
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        ))}
+      </SidebarMenu>
+    </SidebarGroup>
+  )
+}
 
+function ActiveSidebarNavigation() {
+  const pathname = usePathname()
+  return <SidebarNavigation pathname={pathname} />
+}
+
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const {
     user,
     isLoading,
@@ -32,38 +58,25 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar {...props}>
-      <SidebarHeader>
+      <SidebarHeader className="border-b border-sidebar-border px-4 py-5">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" render={<Link href="/" />}>
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <GalleryVerticalEndIcon className="size-4" />
+            <SidebarMenuButton size="lg" className="h-16 gap-3 rounded-xl px-2 hover:bg-transparent" render={<Link href="/" />}>
+              <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-sidebar-primary text-sidebar-primary-foreground shadow-sm">
+                <Image src="/programass-logo.svg" alt="" width={36} height={36} className="size-9" />
               </div>
-              <div className="flex flex-col gap-0.5 leading-none">
-                <span className="font-medium">PProgramaSS</span>
-                <span className="">v1.0.0</span>
+              <div className="flex min-w-0 flex-col gap-1 leading-tight">
+                <span className="truncate text-lg font-semibold tracking-tight">PProgramaSS</span>
+                <span className="text-sm text-muted-foreground">v1.0.0</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarMenu>
-
-            {APP_NAV_ITEMS.map((item) => (
-              <SidebarMenuItem key={item.id}>
-                <SidebarMenuButton render={<Link href={item.url} className="font-medium" />}>
-                  {item.icon && <item.icon />}
-                  {item.title}
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-
-
-
-          </SidebarMenu>
-        </SidebarGroup>
+        <React.Suspense fallback={<SidebarNavigation />}>
+          <ActiveSidebarNavigation />
+        </React.Suspense>
       </SidebarContent>
       <SidebarFooter>
         {isLoading ? (

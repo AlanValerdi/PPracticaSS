@@ -57,15 +57,15 @@ export function NavUser({
           <DropdownMenuTrigger render={
             <SidebarMenuButton
               size="lg"
-              className="data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground"
+              className="h-[4.5rem] gap-3 rounded-xl border border-sidebar-border bg-background/60 px-3 data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
+              <Avatar className="h-11 w-11 rounded-xl">
                 <AvatarImage src={user.avatar || undefined} alt={user.name} />
                 <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+              <div className="grid min-w-0 flex-1 text-left leading-tight">
+                <span className="truncate text-base font-semibold">{user.name}</span>
+                <span className="truncate text-sm text-muted-foreground">{user.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>

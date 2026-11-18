@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import CvRecommendationsPage from "@/components/cv-recommendations";
+import { requireSession } from "@/lib/api/auth";
 import { getCatalog } from "@/lib/api/catalog";
 import { getSavedOffers } from "@/lib/api/saved-offers";
 
@@ -12,6 +13,7 @@ export default function AnalisisCvPage() {
 }
 
 async function AnalysisContent() {
+  await requireSession();
   const [catalog, saved] = await Promise.all([
     getCatalog(),
     getSavedOffers().then((offers) => ({ offers, failed: false })).catch(() => ({ offers: null, failed: true })),

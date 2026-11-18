@@ -8,9 +8,12 @@ export type SaveOfferState = {
   message?: string;
 };
 
-export async function saveOfferAction(offerUuid: string): Promise<SaveOfferState> {
+export async function saveOfferAction(offerUuid: string, areaSlug?: string): Promise<SaveOfferState> {
   if (typeof offerUuid !== "string" || !offerUuid.trim() || offerUuid.length > 200) {
     return { status: "error", message: "La oferta no es válida." };
+  }
+  if (areaSlug !== undefined && (typeof areaSlug !== "string" || !areaSlug.trim() || areaSlug.length > 200)) {
+    return { status: "error", message: "El área no es válida." };
   }
 
   const sessionToken = (await cookies()).get("pp_session")?.value;
@@ -25,7 +28,7 @@ export async function saveOfferAction(offerUuid: string): Promise<SaveOfferState
   let response: Response;
   try {
     response = await fetch(
-      `${baseUrl.replace(/\/+$/, "")}/api/v1/saved-offers/${encodeURIComponent(offerUuid)}`,
+      `${baseUrl.replace(/\/+$/, "")}/api/v1/saved-offers/${encodeURIComponent(offerUuid)}${areaSlug ? `?areaSlug=${encodeURIComponent(areaSlug)}` : ""}`,
       {
         method: "POST",
         cache: "no-store",
@@ -47,13 +50,19 @@ export async function saveOfferAction(offerUuid: string): Promise<SaveOfferState
   if (response.status === 404) {
     return { status: "error", message: "La oferta ya no está disponible." };
   }
+  if (response.status === 422) {
+    return { status: "error", message: "Esta área no está asociada a la oferta." };
+  }
   if (response.status !== 200 && response.status !== 201) {
     return { status: "error", message: "No se pudo guardar la oferta. Intenta nuevamente." };
   }
 
   revalidatePath("/guardados");
   revalidatePath("/facultad/[areaId]/[ofertaId]", "page");
-  return { status: "saved", message: "Oferta guardada." };
+  return {
+    status: "saved",
+    message: response.status === 200 ? "Área asociada actualizada." : "Oferta guardada.",
+  };
 }
 
 export type RemoveSavedOfferState = {
