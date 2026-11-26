@@ -6,7 +6,14 @@ import { LoginForm } from "@/components/login-form"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  const { next } = await searchParams
+  const returnPath = typeof next === "string" ? next : undefined
+
   return (
     <main
       className="relative isolate flex min-h-svh w-full items-center justify-center overflow-hidden px-4 py-8 sm:px-6 sm:py-12"
@@ -60,7 +67,7 @@ export default function LoginPage() {
               <span className="text-sm text-muted-foreground">Prácticas y servicio social</span>
             </span>
           </div>
-          <LoginForm className="w-full" />
+          <LoginForm className="w-full" returnPath={returnPath} />
         </div>
       </Card>
     </main>

@@ -17,7 +17,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { getNavHref, type AuthStatus } from "@/lib/auth-routes"
+import { getGoogleLoginHref, getNavHref, type AuthStatus } from "@/lib/auth-routes"
 import { APP_NAV_ITEMS } from "@/lib/navigation"
 import { getVisibleNavItems, type UserRole } from "@/lib/nav-visibility"
 import { NavUser } from "./nav-user"
@@ -57,6 +57,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     isLoggingOut,
     logoutError,
   } = useAuth();
+  const pathname = usePathname();
   const authStatus: AuthStatus = isLoading || error ? "unknown" : user ? "authenticated" : "anonymous";
 
   return (
@@ -113,7 +114,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
-                render={<a href="/api/backend/auth/google/login" />}
+                render={<a href={getGoogleLoginHref(pathname)} />}
               >
                 Iniciar sesión con Google
               </SidebarMenuButton>
