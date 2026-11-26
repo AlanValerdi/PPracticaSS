@@ -1,6 +1,6 @@
 export const LOGIN_PATH = "/login";
 export const SESSION_COOKIE = "pp_session";
-export const PROTECTED_PATHS = ["/guardados", "/analisis-cv"] as const;
+export const PROTECTED_PATHS = ["/guardados", "/analisis-cv", "/admin"] as const;
 
 export type AuthStatus = "unknown" | "anonymous" | "authenticated";
 

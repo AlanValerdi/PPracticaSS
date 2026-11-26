@@ -3,7 +3,9 @@ import "server-only";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export async function requireSession(): Promise<void> {
+import type { components } from "@/lib/api-types";
+
+async function fetchSessionUser(): Promise<components["schemas"]["UserRead"]> {
   const sessionToken = (await cookies()).get("pp_session")?.value;
   if (!sessionToken) redirect("/login");
 
@@ -17,4 +19,16 @@ export async function requireSession(): Promise<void> {
 
   if (response.status === 401) redirect("/login");
   if (!response.ok) throw new Error("No se pudo consultar tu sesión.");
+
+  return response.json();
+}
+
+export async function requireSession(): Promise<void> {
+  await fetchSessionUser();
+}
+
+// Anonymous users go to /login, signed-in non-admins go home.
+export async function requireAdmin(): Promise<void> {
+  const user = await fetchSessionUser();
+  if (user.role !== "admin") redirect("/");
 }

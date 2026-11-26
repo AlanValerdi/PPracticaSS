@@ -19,13 +19,14 @@ import {
 } from "@/components/ui/sidebar"
 import { getNavHref, type AuthStatus } from "@/lib/auth-routes"
 import { APP_NAV_ITEMS } from "@/lib/navigation"
+import { getVisibleNavItems, type UserRole } from "@/lib/nav-visibility"
 import { NavUser } from "./nav-user"
 
-function SidebarNavigation({ pathname, authStatus = "unknown" }: { pathname?: string; authStatus?: AuthStatus }) {
+function SidebarNavigation({ pathname, authStatus = "unknown", role }: { pathname?: string; authStatus?: AuthStatus; role?: UserRole }) {
   return (
     <SidebarGroup className="px-3 py-5">
       <SidebarMenu className="gap-2">
-        {APP_NAV_ITEMS.map((item) => (
+        {getVisibleNavItems(APP_NAV_ITEMS, role).map((item) => (
           <SidebarMenuItem key={item.id}>
             <SidebarMenuButton
               isActive={pathname !== undefined && (item.url === "/" ? pathname === "/" : pathname === item.url || pathname.startsWith(`${item.url}/`))}
@@ -42,9 +43,9 @@ function SidebarNavigation({ pathname, authStatus = "unknown" }: { pathname?: st
   )
 }
 
-function ActiveSidebarNavigation({ authStatus }: { authStatus: AuthStatus }) {
+function ActiveSidebarNavigation({ authStatus, role }: { authStatus: AuthStatus; role?: UserRole }) {
   const pathname = usePathname()
-  return <SidebarNavigation pathname={pathname} authStatus={authStatus} />
+  return <SidebarNavigation pathname={pathname} authStatus={authStatus} role={role} />
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -76,8 +77,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <React.Suspense fallback={<SidebarNavigation authStatus={authStatus} />}>
-          <ActiveSidebarNavigation authStatus={authStatus} />
+        <React.Suspense fallback={<SidebarNavigation authStatus={authStatus} role={user?.role} />}>
+          <ActiveSidebarNavigation authStatus={authStatus} role={user?.role} />
         </React.Suspense>
       </SidebarContent>
       <SidebarFooter>
