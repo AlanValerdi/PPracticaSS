@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { MapOffer } from "@/lib/mapPinsOffers";
+import type { MapPin } from "@/lib/api/map";
 
 const OffersMap = dynamic(() => import("./offers-map"), {
   ssr: false,
@@ -15,6 +15,6 @@ const OffersMap = dynamic(() => import("./offers-map"), {
   ),
 });
 
-export default function Map({ offers }: { offers: MapOffer[] }) {
+export default function Map({ offers }: { offers: MapPin[] }) {
   return <OffersMap offers={offers} />;
 }

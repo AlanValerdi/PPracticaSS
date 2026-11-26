@@ -52,7 +52,7 @@ components/        Componentes de pantalla y controles reutilizables
 hooks/             Estado de sesión del navegador con SWR
 lib/api/           Consultas al backend desde el servidor
 lib/api-types.d.ts Contrato TypeScript generado desde OpenAPI
-lib/mapPinsOffers.ts Datos de ejemplo usados por el mapa
+lib/api/map.ts Pines reales del mapa (/api/v1/map/pins)
 ```
 
 ### Responsabilidades y flujo de datos
@@ -61,7 +61,7 @@ lib/mapPinsOffers.ts Datos de ejemplo usados por el mapa
 - `next.config.ts` reescribe `/api/backend/:path*` hacia `/api/v1/:path*` del backend para las llamadas de autenticación realizadas por el navegador. `hooks/use-auth.ts` consulta la sesión con SWR.
 - El backend entrega la cookie `pp_session`. Las acciones en `app/actions/` la reenvían al guardar o quitar una oferta y actualizan las páginas afectadas.
 - `lib/api-types.d.ts` contiene los tipos de respuesta generados desde OpenAPI. Si cambia el contrato, sigue las [instrucciones de regeneración del backend](https://github.com/AlanValerdi/pp-backend#tipos-typescript-para-el-frontend).
-- El mapa usa marcadores de ejemplo en `lib/mapPinsOffers.ts`. La página de CV mantiene el PDF en el navegador y muestra resultados simulados; estos flujos no consultan modelos de recomendación ni datos geográficos del backend.
+- El mapa consume los pines reales de `/api/v1/map/pins`; los administradores corrigen ubicaciones en `/admin/ubicaciones`. La página de CV mantiene el PDF en el navegador y muestra resultados simulados; estos flujos no consultan modelos de recomendación ni datos geográficos del backend.
 
 ## Requisitos
 

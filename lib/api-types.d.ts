@@ -268,6 +268,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/map/pins": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Map Pins */
+        get: operations["list_map_pins_api_v1_map_pins_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/geocoding": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Geocoded Addresses */
+        get: operations["list_geocoded_addresses_api_v1_admin_geocoding_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/geocoding/{address_key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Set Manual Coordinates */
+        put: operations["set_manual_coordinates_api_v1_admin_geocoding__address_key__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/geocoding/runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Run Geocoding */
+        post: operations["run_geocoding_api_v1_geocoding_runs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -335,10 +403,75 @@ export interface components {
             /** Name */
             name: string;
         };
+        /** GeocodedAddressRead */
+        GeocodedAddressRead: {
+            /** Addresskey */
+            addressKey: string;
+            /** Rawaddress */
+            rawAddress: string;
+            /** Lat */
+            lat: number | null;
+            /** Lng */
+            lng: number | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "pending" | "ok" | "approximate" | "not_found" | "manual" | "virtual";
+            /** Source */
+            source: ("nominatim" | "admin") | null;
+            /**
+             * Updatedat
+             * Format: date-time
+             */
+            updatedAt: string;
+        };
+        /** GeocodingRunRead */
+        GeocodingRunRead: {
+            /** Created */
+            created: number;
+            /** Geocoded */
+            geocoded: number;
+            /** Approximate */
+            approximate: number;
+            /** Notfound */
+            notFound: number;
+            /** Failed */
+            failed: number;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** ManualCoordinates */
+        ManualCoordinates: {
+            /** Lat */
+            lat: number;
+            /** Lng */
+            lng: number;
+        };
+        /** MapPin */
+        MapPin: {
+            /** Offeruuid */
+            offerUuid: string;
+            /** Title */
+            title: string;
+            /** Folio */
+            folio: string;
+            /** Areaslug */
+            areaSlug: string | null;
+            /** Address */
+            address: string;
+            /** Lat */
+            lat: number;
+            /** Lng */
+            lng: number;
+            /**
+             * Precision
+             * @enum {string}
+             */
+            precision: "exact" | "approximate";
         };
         /** Offer */
         Offer: {
@@ -646,6 +779,11 @@ export interface components {
             name: string;
             /** Avatarurl */
             avatarUrl: string | null;
+            /**
+             * Role
+             * @enum {string}
+             */
+            role: "user" | "admin";
         };
         /** ValidationError */
         ValidationError: {
@@ -1079,6 +1217,123 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RecommendationAnalysis"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_map_pins_api_v1_map_pins_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MapPin"][];
+                };
+            };
+        };
+    };
+    list_geocoded_addresses_api_v1_admin_geocoding_get: {
+        parameters: {
+            query?: {
+                status?: ("pending" | "ok" | "approximate" | "not_found" | "manual" | "virtual") | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GeocodedAddressRead"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_manual_coordinates_api_v1_admin_geocoding__address_key__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                address_key: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ManualCoordinates"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GeocodedAddressRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    run_geocoding_api_v1_geocoding_runs_post: {
+        parameters: {
+            query?: {
+                retryNotFound?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GeocodingRunRead"];
                 };
             };
             /** @description Validation Error */
