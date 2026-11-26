@@ -1,7 +1,6 @@
 "use client";
 
 import { useActionState } from "react";
-import { usePathname } from "next/navigation";
 import { Bookmark, BookmarkCheck, LoaderCircle } from "lucide-react";
 
 import { saveOfferAction, type SaveOfferState } from "@/app/actions/saved-offers";
@@ -25,7 +24,9 @@ export function SaveOfferButton({
   areaSlug,
   canUpdateArea = false,
 }: SaveOfferButtonProps) {
-  const pathname = usePathname();
+  const offerPath = areaSlug
+    ? `/facultad/${encodeURIComponent(areaSlug)}/${encodeURIComponent(offerUuid)}`
+    : undefined;
   const [state, action, isPending] = useActionState<SaveOfferState>(
     async () => saveOfferAction(offerUuid, areaSlug),
     {
@@ -36,7 +37,7 @@ export function SaveOfferButton({
 
   if (!isAuthenticated || state.status === "auth-required") {
     return (
-      <Button variant="outline" nativeButton={false} render={<a href={getGoogleLoginHref(pathname)} />}>
+      <Button variant="outline" nativeButton={false} render={<a href={getGoogleLoginHref(offerPath)} />}>
         <Bookmark aria-hidden="true" />
         Iniciar sesión para guardar
       </Button>
