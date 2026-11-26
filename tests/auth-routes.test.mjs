@@ -23,3 +23,9 @@ test('detects protected paths including nested routes', () => {
   assert.equal(isProtectedPath('/guardadosx'), false);
   assert.equal(isProtectedPath('/'), false);
 });
+
+test('admin routes are protected', () => {
+  assert.equal(isProtectedPath('/admin'), true);
+  assert.equal(isProtectedPath('/admin/ubicaciones'), true);
+  assert.equal(isProtectedPath('/administrador'), false);
+});
