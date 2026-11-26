@@ -1,6 +1,7 @@
 import { cn } from "cn"
 
 import { Button } from "@/components/ui/button"
+import { getGoogleLoginHref } from "@/lib/auth-routes"
 import {
   Card,
   CardContent,
@@ -11,8 +12,9 @@ import {
 
 export function LoginForm({
   className,
+  returnPath,
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<"div"> & { returnPath?: string }) {
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="gap-0 rounded-none border-0 bg-transparent py-4 shadow-none ring-0 backdrop-blur-none sm:py-5">
@@ -29,7 +31,7 @@ export function LoginForm({
             className="min-h-12 w-full rounded-xl text-base"
             variant="outline"
             nativeButton={false}
-            render={<a href="/api/backend/auth/google/login" />}
+            render={<a href={getGoogleLoginHref(returnPath)} />}
           >
             <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <path

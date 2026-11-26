@@ -17,7 +17,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { getNavHref, type AuthStatus } from "@/lib/auth-routes"
+import { getGoogleLoginHref, getNavHref, type AuthStatus } from "@/lib/auth-routes"
 import { APP_NAV_ITEMS } from "@/lib/navigation"
 import { getVisibleNavItems, type UserRole } from "@/lib/nav-visibility"
 import { NavUser } from "./nav-user"
@@ -46,6 +46,20 @@ function SidebarNavigation({ pathname, authStatus = "unknown", role }: { pathnam
 function ActiveSidebarNavigation({ authStatus, role }: { authStatus: AuthStatus; role?: UserRole }) {
   const pathname = usePathname()
   return <SidebarNavigation pathname={pathname} authStatus={authStatus} role={role} />
+}
+
+function SidebarLoginButton({ returnPath }: { returnPath?: string }) {
+  return (
+    <SidebarMenuButton render={<a href={getGoogleLoginHref(returnPath)} />}>
+      Iniciar sesión con Google
+    </SidebarMenuButton>
+  )
+}
+
+// usePathname() must stay inside <Suspense> so the layout can still be prerendered.
+function ActiveSidebarLoginButton() {
+  const pathname = usePathname()
+  return <SidebarLoginButton returnPath={pathname} />
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -112,11 +126,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         ) : (
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton
-                render={<a href="/api/backend/auth/google/login" />}
-              >
-                Iniciar sesión con Google
-              </SidebarMenuButton>
+              <React.Suspense fallback={<SidebarLoginButton />}>
+                <ActiveSidebarLoginButton />
+              </React.Suspense>
             </SidebarMenuItem>
           </SidebarMenu>
         )}

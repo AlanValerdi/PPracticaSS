@@ -5,6 +5,7 @@ import { BookmarkX, LoaderCircle } from "lucide-react";
 
 import { removeSavedOfferAction, type RemoveSavedOfferState } from "@/app/actions/saved-offers";
 import { Button } from "@/components/ui/button";
+import { getGoogleLoginHref } from "@/lib/auth-routes";
 
 type RemoveSavedOfferButtonProps = {
   offerUuid: string;
@@ -38,7 +39,7 @@ export function RemoveSavedOfferButton({ offerUuid, title }: RemoveSavedOfferBut
       )}
       {state.status === "auth-required" && (
         <p className="text-right text-sm text-[#14171B]" role="alert">
-          Tu sesión expiró. <a className="underline" href="/api/backend/auth/google/login">Inicia sesión</a> para quitar la oferta.
+          Tu sesión expiró. <a className="underline" href={getGoogleLoginHref("/guardados")}>Inicia sesión</a> para quitar la oferta.
         </p>
       )}
     </form>
