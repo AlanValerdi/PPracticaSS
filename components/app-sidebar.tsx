@@ -17,10 +17,11 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { getNavHref, type AuthStatus } from "@/lib/auth-routes"
 import { APP_NAV_ITEMS } from "@/lib/navigation"
 import { NavUser } from "./nav-user"
 
-function SidebarNavigation({ pathname }: { pathname?: string }) {
+function SidebarNavigation({ pathname, authStatus = "unknown" }: { pathname?: string; authStatus?: AuthStatus }) {
   return (
     <SidebarGroup className="px-3 py-5">
       <SidebarMenu className="gap-2">
@@ -29,7 +30,7 @@ function SidebarNavigation({ pathname }: { pathname?: string }) {
             <SidebarMenuButton
               isActive={pathname !== undefined && (item.url === "/" ? pathname === "/" : pathname === item.url || pathname.startsWith(`${item.url}/`))}
               className="h-12 gap-3 rounded-xl px-3 text-lg font-medium data-active:bg-sidebar-primary data-active:text-sidebar-primary-foreground data-active:shadow-sm [&_svg]:size-5"
-              render={<Link href={item.url} className="font-medium" />}
+              render={<Link href={getNavHref(item, authStatus)} className="font-medium" />}
             >
               {item.icon && <item.icon strokeWidth={1.9} />}
               {item.title}
@@ -41,9 +42,9 @@ function SidebarNavigation({ pathname }: { pathname?: string }) {
   )
 }
 
-function ActiveSidebarNavigation() {
+function ActiveSidebarNavigation({ authStatus }: { authStatus: AuthStatus }) {
   const pathname = usePathname()
-  return <SidebarNavigation pathname={pathname} />
+  return <SidebarNavigation pathname={pathname} authStatus={authStatus} />
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -55,6 +56,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     isLoggingOut,
     logoutError,
   } = useAuth();
+  const authStatus: AuthStatus = isLoading || error ? "unknown" : user ? "authenticated" : "anonymous";
 
   return (
     <Sidebar {...props}>
@@ -74,8 +76,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <React.Suspense fallback={<SidebarNavigation />}>
-          <ActiveSidebarNavigation />
+        <React.Suspense fallback={<SidebarNavigation authStatus={authStatus} />}>
+          <ActiveSidebarNavigation authStatus={authStatus} />
         </React.Suspense>
       </SidebarContent>
       <SidebarFooter>
