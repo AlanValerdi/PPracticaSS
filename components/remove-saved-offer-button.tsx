@@ -21,11 +21,11 @@ export function RemoveSavedOfferButton({ offerUuid, title }: RemoveSavedOfferBut
     <form action={action} className="flex max-w-48 shrink-0 flex-col items-end gap-2" aria-busy={isPending}>
       <Button
         type="submit"
-        variant="ghost"
-        size="icon-sm"
+        variant="outline"
+        size="icon-lg"
         disabled={isPending || state.status === "removed"}
         aria-label={isPending ? `Quitando de guardados: ${title}` : `Quitar de guardados: ${title}`}
-        className="text-[#14171B] disabled:opacity-60"
+        className="rounded-xl border-[#A94E2E]/20 bg-white text-[#A94E2E] hover:bg-white/90 hover:text-[#963F23] disabled:opacity-60 [&_svg]:size-5"
       >
         {isPending ? (
           <LoaderCircle className="animate-spin" aria-hidden="true" />

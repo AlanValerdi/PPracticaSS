@@ -42,7 +42,7 @@ export default async function GuardadosPage() {
                 appearance="saved"
               >
                 <div className="relative z-10 flex flex-1 flex-col gap-4">
-                  <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-center justify-between gap-4">
                     <div className="min-w-0 space-y-1">
                       <p className="text-sm font-semibold wrap-break-word">Folio {offer.folio}</p>
                       <p className="text-sm wrap-break-word">
@@ -63,7 +63,7 @@ export default async function GuardadosPage() {
                     )}
                   </div>
 
-                  <div className="-mx-5 -mb-5 mt-auto grid grid-cols-2 gap-2 bg-[#DCA991] p-3 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center">
+                  <div className="mt-auto grid grid-cols-2 gap-2 border-t border-[#A94E2E]/15 pt-4 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center">
                     {detailHref ? (
                       <Button className="col-span-2 min-h-11 w-full bg-[#A94E2E] px-6 text-base text-white hover:bg-[#963F23] sm:col-span-1 sm:min-w-40" size="default" nativeButton={false} render={<Link href={detailHref} />}>
                         Ver oferta
