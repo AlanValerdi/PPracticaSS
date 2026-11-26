@@ -21,7 +21,7 @@ const REQUIRE_CV_CONSENT = false;
 export default function CvRecommendationsPage(props: Props) {
   const { user, isLoading, error } = useAuth();
   useEffect(() => {
-    if (!isLoading && !error && !user) window.location.replace("/api/backend/auth/google/login");
+    if (!isLoading && !error && !user) window.location.replace("/login");
   }, [user, isLoading, error]);
   if (error) return <div className="p-6"><p role="alert">No se pudo consultar tu sesión.</p><Button onClick={() => window.location.reload()}>Reintentar</Button></div>;
   if (isLoading || !user) return <div className="flex items-center gap-2 p-6" role="status"><LoaderCircle className="size-4 animate-spin" />{isLoading ? "Comprobando tu sesión…" : "Redirigiendo al inicio de sesión…"}</div>;
