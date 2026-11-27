@@ -2,6 +2,9 @@
 
 import dynamic from "next/dynamic";
 import type { MapPin } from "@/lib/api/map";
+import type { OfferAreas } from "@/lib/map-pins";
+
+export type MapOffer = MapPin & { areas: OfferAreas };
 
 const OffersMap = dynamic(() => import("./offers-map"), {
   ssr: false,
@@ -15,6 +18,6 @@ const OffersMap = dynamic(() => import("./offers-map"), {
   ),
 });
 
-export default function Map({ offers }: { offers: MapPin[] }) {
+export default function Map({ offers }: { offers: MapOffer[] }) {
   return <OffersMap offers={offers} />;
 }
