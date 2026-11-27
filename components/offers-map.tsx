@@ -1,31 +1,62 @@
 "use client";
 
-import { divIcon, map, marker, tileLayer } from "leaflet";
+import { map, marker, tileLayer } from "leaflet";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
-import type { MapPin as OfferPin } from "@/lib/api/map";
-import { getPinHref } from "@/lib/map-pins";
 import { renderToStaticMarkup } from "react-dom/server";
-import { MapPin } from "lucide-react";
 
-// Only fixed application markup goes into the icon; React escapes popup content.
-function createIcon(fill: string, opacity: number) {
-  return divIcon({
-    html: renderToStaticMarkup(
-      <MapPin size={36} fill={fill} color="white" strokeWidth={2} opacity={opacity} />
-    ),
-    className:
-      "offer-marker focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-500",
-    iconSize: [36, 36],
-    iconAnchor: [18, 36],
-    popupAnchor: [0, -36],
-  });
+import { getAreaCardVisual } from "./area-card";
+import type { MapOffer } from "./map";
+import { createPinIcon } from "./map-icons";
+import { getPinHref } from "@/lib/map-pins";
+
+const exactIcon = createPinIcon("#1d4ed8");
+const approximateIcon = createPinIcon("#f59e0b", 0.6);
+
+// Strips Leaflet's white popup frame so the area-coloured card is the whole popup.
+// "!" is required: Tailwind utilities live in a cascade layer and unlayered leaflet.css would win.
+const POPUP_CLASS =
+  "offer-popup [&_.leaflet-popup-content-wrapper]:overflow-hidden! [&_.leaflet-popup-content-wrapper]:rounded-3xl! [&_.leaflet-popup-content-wrapper]:bg-transparent! [&_.leaflet-popup-content-wrapper]:p-0! [&_.leaflet-popup-content]:m-0! [&_.leaflet-popup-tip-container]:hidden";
+
+// Same palette and illustration as the area cards on the home page. React escapes all text.
+function OfferPopupCard({ offer, href }: { offer: MapOffer; href: string | null }) {
+  const area = offer.area;
+  const { Illustration, tone } = getAreaCardVisual(
+    area ? `${area.areaName} ${offer.areaSlug ?? ""}` : "",
+    area?.toneIndex ?? 0,
+  );
+
+  return (
+    <article className="flex flex-col overflow-hidden rounded-3xl font-sans text-[#17151B]" style={{ backgroundColor: tone.background }}>
+      <div className="flex flex-col gap-3 px-5 pt-5 pb-4">
+        <div className="flex items-center gap-3">
+          <Illustration aria-hidden="true" className="size-10 shrink-0" style={{ color: tone.ink }} strokeWidth={1.5} fill="currentColor" fillOpacity={0.16} />
+          <div className="min-w-0">
+            <p className="m-0! text-sm leading-tight font-semibold" style={{ color: tone.ink }}>{area?.areaName ?? "Área no disponible"}</p>
+            {area?.facultyName && <p className="m-0! text-xs leading-tight text-zinc-700">{area.facultyName}</p>}
+          </div>
+        </div>
+        <h3 className="m-0 text-base leading-snug font-bold">{offer.title}</h3>
+        <p className="m-0! text-xs text-zinc-700">Folio {offer.folio}</p>
+        <p className="m-0! text-sm leading-relaxed">{offer.address}</p>
+        {offer.precision === "approximate" && (
+          <p className="m-0! text-xs font-medium" style={{ color: tone.ink }}>Ubicación aproximada (código postal)</p>
+        )}
+      </div>
+      {href && (
+        <a
+          href={href}
+          className="flex min-h-12 items-center justify-center px-4 py-3 text-center text-sm font-semibold text-white! no-underline transition-[filter] hover:brightness-90 focus-visible:outline-4 focus-visible:-outline-offset-4 focus-visible:outline-white"
+          style={{ backgroundColor: tone.ink }}
+        >
+          Ver oferta
+        </a>
+      )}
+    </article>
+  );
 }
 
-const exactIcon = createIcon("#1d4ed8", 1);
-const approximateIcon = createIcon("#f59e0b", 0.6);
-
-export default function OffersMap({ offers }: { offers: OfferPin[] }) {
+export default function OffersMap({ offers }: { offers: MapOffer[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
@@ -49,24 +80,7 @@ export default function OffersMap({ offers }: { offers: OfferPin[] }) {
     for (const offer of offers) {
       const href = getPinHref(offer);
       const popup = document.createElement("div");
-      popup.innerHTML = renderToStaticMarkup(
-        <article className="font-sans text-zinc-900">
-          <h3 className="mb-2 text-base leading-snug font-bold">{offer.title}</h3>
-          <p className="my-2! text-xs text-zinc-600">Folio: {offer.folio}</p>
-          <p className="my-2! text-sm leading-relaxed">{offer.address}</p>
-          {offer.precision === "approximate" && (
-            <p className="my-2! text-xs text-amber-700">Ubicación aproximada (código postal)</p>
-          )}
-          {href && (
-            <a
-              href={href}
-              className="mt-2 inline-block rounded-md bg-blue-700 px-3 py-2 font-semibold text-white! no-underline hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
-            >
-              Ver más
-            </a>
-          )}
-        </article>
-      );
+      popup.innerHTML = renderToStaticMarkup(<OfferPopupCard offer={offer} href={href} />);
       popup.querySelector("a")?.addEventListener("click", (event) => {
         if (!href) return;
         if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -80,7 +94,7 @@ export default function OffersMap({ offers }: { offers: OfferPin[] }) {
         alt: offer.title,
       })
         .addTo(instance)
-        .bindPopup(popup, { minWidth: 220, maxWidth: 280 });
+        .bindPopup(popup, { minWidth: 240, maxWidth: 300, className: POPUP_CLASS });
     }
 
     return () => {

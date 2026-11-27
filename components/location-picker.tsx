@@ -3,9 +3,12 @@
 import { map, marker, tileLayer, type LatLngExpression, type Marker } from "leaflet";
 import { useEffect, useRef } from "react";
 
+import { createPinIcon } from "./map-icons";
+
 export type Coordinates = { lat: number; lng: number };
 
 const DEFAULT_CENTER: LatLngExpression = [19.0414, -98.2063];
+const pickedIcon = createPinIcon("#1d4ed8");
 
 // Click anywhere on the map to choose a location; the marker follows the selection.
 export default function LocationPicker({
@@ -41,12 +44,12 @@ export default function LocationPicker({
       maxZoom: 19,
     }).addTo(instance);
 
-    if (initial) markerRef.current = marker([initial.lat, initial.lng]).addTo(instance);
+    if (initial) markerRef.current = marker([initial.lat, initial.lng], { icon: pickedIcon }).addTo(instance);
 
     instance.on("click", (event) => {
       const { lat, lng } = event.latlng;
       if (markerRef.current) markerRef.current.setLatLng([lat, lng]);
-      else markerRef.current = marker([lat, lng]).addTo(instance);
+      else markerRef.current = marker([lat, lng], { icon: pickedIcon }).addTo(instance);
       onChangeRef.current({ lat, lng });
     });
 

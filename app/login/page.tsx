@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
@@ -6,14 +7,15 @@ import { LoginForm } from "@/components/login-form"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 
-export default async function LoginPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
-}) {
-  const { next } = await searchParams
-  const returnPath = typeof next === "string" ? next : undefined
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
+// searchParams is request data, so it is read inside <Suspense> to keep the page prerenderable.
+async function LoginFormWithReturnPath({ searchParams }: { searchParams: SearchParams }) {
+  const { next } = await searchParams
+  return <LoginForm className="w-full" returnPath={typeof next === "string" ? next : undefined} />
+}
+
+export default function LoginPage({ searchParams }: { searchParams: SearchParams }) {
   return (
     <main
       className="relative isolate flex min-h-svh w-full items-center justify-center overflow-hidden px-4 py-8 sm:px-6 sm:py-12"
@@ -67,7 +69,9 @@ export default async function LoginPage({
               <span className="text-sm text-muted-foreground">Prácticas y servicio social</span>
             </span>
           </div>
-          <LoginForm className="w-full" returnPath={returnPath} />
+          <Suspense fallback={<LoginForm className="w-full" />}>
+            <LoginFormWithReturnPath searchParams={searchParams} />
+          </Suspense>
         </div>
       </Card>
     </main>

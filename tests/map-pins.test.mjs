@@ -21,3 +21,22 @@ test('rejects invalid or out of range coordinates', () => {
   assert.equal(parseCoordinates(NaN, 0), null);
   assert.equal(parseCoordinates(null, 0), null);
 });
+
+test('area lookup mirrors the home tone order and resolves the faculty', async () => {
+  const { buildAreaLookup } = await import('../lib/map-pins.ts');
+  const catalog = {
+    sections: [{ id: 'ing', order: 1 }, { id: 'lic', order: 2 }],
+    faculties: [{ id: 'f1', name: 'Facultad de Ingeniería' }, { id: 'f2', name: 'Facultad de Economía' }],
+    areas: [
+      { slug: 'civil', name: 'Civil', sectionId: 'ing', facultyId: 'f1' },
+      { slug: 'actuaria', name: 'Actuaría', sectionId: 'lic', facultyId: 'f2' },
+      { slug: 'computacion', name: 'Computación', sectionId: 'ing', facultyId: 'f1' },
+      { slug: 'huerfana', name: 'Sin facultad', sectionId: 'lic', facultyId: 'missing' },
+    ],
+  };
+  const lookup = buildAreaLookup(catalog);
+  assert.deepEqual(lookup.get('computacion'), { areaName: 'Computación', facultyName: 'Facultad de Ingeniería', toneIndex: 1 });
+  assert.deepEqual(lookup.get('actuaria'), { areaName: 'Actuaría', facultyName: 'Facultad de Economía', toneIndex: 0 });
+  assert.equal(lookup.get('huerfana').facultyName, null);
+  assert.equal(lookup.get('nope'), undefined);
+});
