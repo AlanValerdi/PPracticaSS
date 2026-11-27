@@ -3,12 +3,12 @@ import { Suspense } from "react"
 import Map from "@/components/map"
 import { getCatalog } from "@/lib/api/catalog"
 import { getMapPins } from "@/lib/api/map"
-import { buildAreaLookup } from "@/lib/map-pins"
+import { buildAreaLookup, describeOfferAreas } from "@/lib/map-pins"
 
 async function MapWithOffers() {
   const [pins, catalog] = await Promise.all([getMapPins(), getCatalog()])
   const areas = buildAreaLookup(catalog)
-  const offers = pins.map((pin) => ({ ...pin, area: (pin.areaSlug && areas.get(pin.areaSlug)) || null }))
+  const offers = pins.map((pin) => ({ ...pin, areas: describeOfferAreas(pin.areaSlugs, areas) }))
   return <Map offers={offers} />
 }
 

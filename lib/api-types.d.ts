@@ -461,6 +461,8 @@ export interface components {
             folio: string;
             /** Areaslug */
             areaSlug: string | null;
+            /** Areaslugs */
+            areaSlugs: string[];
             /** Address */
             address: string;
             /** Lat */

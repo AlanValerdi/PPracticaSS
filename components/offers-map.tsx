@@ -4,6 +4,7 @@ import { map, marker, tileLayer } from "leaflet";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { Users } from "lucide-react";
 
 import { getAreaCardVisual } from "./area-card";
 import type { MapOffer } from "./map";
@@ -18,13 +19,30 @@ const approximateIcon = createPinIcon("#f59e0b", 0.6);
 const POPUP_CLASS =
   "offer-popup [&_.leaflet-popup-content-wrapper]:overflow-hidden! [&_.leaflet-popup-content-wrapper]:rounded-3xl! [&_.leaflet-popup-content-wrapper]:bg-transparent! [&_.leaflet-popup-content-wrapper]:p-0! [&_.leaflet-popup-content]:m-0! [&_.leaflet-popup-tip-container]:hidden";
 
+// Offers open to several careers don't belong to one area, so they get a neutral card.
+const MULTI_AREA_TONE = { background: "#ECEAE6", ink: "#4A4E57" };
+
+function describeHeading(areas: MapOffer["areas"]): { title: string; subtitle: string | null; faculty: string | null } {
+  if (areas.kind === "single") return { title: areas.areaName, subtitle: null, faculty: areas.facultyName };
+  if (areas.kind === "unknown") return { title: "Área no disponible", subtitle: null, faculty: null };
+  const names = areas.shownNames.join(", ");
+  return {
+    title: `Abierta a ${areas.count} carreras`,
+    subtitle: areas.remaining > 0 ? `${names} y ${areas.remaining} más` : names,
+    faculty: areas.facultyName,
+  };
+}
+
 // Same palette and illustration as the area cards on the home page. React escapes all text.
 function OfferPopupCard({ offer, href }: { offer: MapOffer; href: string | null }) {
-  const area = offer.area;
-  const { Illustration, tone } = getAreaCardVisual(
-    area ? `${area.areaName} ${offer.areaSlug ?? ""}` : "",
-    area?.toneIndex ?? 0,
+  const { areas } = offer;
+  const visual = getAreaCardVisual(
+    areas.kind === "single" ? `${areas.areaName} ${areas.slug}` : "",
+    areas.kind === "single" ? areas.toneIndex : 0,
   );
+  const Illustration = areas.kind === "multiple" ? Users : visual.Illustration;
+  const tone = areas.kind === "single" ? visual.tone : MULTI_AREA_TONE;
+  const heading = describeHeading(areas);
 
   return (
     <article className="flex flex-col overflow-hidden rounded-3xl font-sans text-[#17151B]" style={{ backgroundColor: tone.background }}>
@@ -32,8 +50,9 @@ function OfferPopupCard({ offer, href }: { offer: MapOffer; href: string | null 
         <div className="flex items-center gap-3">
           <Illustration aria-hidden="true" className="size-10 shrink-0" style={{ color: tone.ink }} strokeWidth={1.5} fill="currentColor" fillOpacity={0.16} />
           <div className="min-w-0">
-            <p className="m-0! text-sm leading-tight font-semibold" style={{ color: tone.ink }}>{area?.areaName ?? "Área no disponible"}</p>
-            {area?.facultyName && <p className="m-0! text-xs leading-tight text-zinc-700">{area.facultyName}</p>}
+            <p className="m-0! text-sm leading-tight font-semibold" style={{ color: tone.ink }}>{heading.title}</p>
+            {heading.subtitle && <p className="m-0! text-xs leading-tight text-zinc-700">{heading.subtitle}</p>}
+            {heading.faculty && <p className="m-0! text-xs leading-tight text-zinc-700">{heading.faculty}</p>}
           </div>
         </div>
         <h3 className="m-0 text-base leading-snug font-bold">{offer.title}</h3>

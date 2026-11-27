@@ -43,3 +43,30 @@ export function buildAreaLookup(catalog: CatalogShape): Map<string, AreaInfo> {
   }
   return lookup;
 }
+
+export type OfferAreas =
+  | ({ kind: "single"; slug: string } & AreaInfo)
+  | { kind: "multiple"; count: number; shownNames: string[]; remaining: number; facultyName: string | null }
+  | { kind: "unknown" };
+
+const SHOWN_AREA_NAMES = 2;
+
+// Offers can be open to many careers; only single-area offers take that area's colour.
+export function describeOfferAreas(slugs: string[], lookup: Map<string, AreaInfo>): OfferAreas {
+  const known = slugs.flatMap((slug) => {
+    const info = lookup.get(slug);
+    return info ? [{ slug, ...info }] : [];
+  });
+  if (known.length === 0) return { kind: "unknown" };
+  if (known.length === 1) return { kind: "single", ...known[0] };
+
+  const faculties = new Set(known.map((area) => area.facultyName));
+  const [onlyFaculty] = faculties;
+  return {
+    kind: "multiple",
+    count: known.length,
+    shownNames: known.slice(0, SHOWN_AREA_NAMES).map((area) => area.areaName),
+    remaining: Math.max(known.length - SHOWN_AREA_NAMES, 0),
+    facultyName: faculties.size === 1 ? onlyFaculty : null,
+  };
+}
