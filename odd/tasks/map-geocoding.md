@@ -20,7 +20,7 @@ Replace the fake pins in `/mapa` (`lib/mapPinsOffers.ts`) with real offer locati
 - [x] T1 (delegated: writer trigger, 2+ non-trivial files) Backend: migration `geocoded_addresses` + `users.role`; address normalization; Nominatim client + job; `require_admin_user`; endpoints `GET /api/v1/map/pins`, `GET/PUT /api/v1/admin/geocoding`, `POST /api/v1/geocoding/runs`; pytest.
 - [x] T2 (inline) Run geocoding job on restored data; record ok/not_found counts.
 - [x] T3 (delegated: writer trigger) Frontend: `/mapa` from `/map/pins`, delete `mapPinsOffers.ts`; `/admin/ubicaciones` page; admin guard in proxy + server; sidebar admin link by role; regenerate `lib/api-types.d.ts`; node tests.
-- [ ] T4 (inline) End-to-end verification and PRs.
+- [x] T4 (inline) End-to-end verification and PRs.
 
 ## Acceptance criteria
 - `/mapa` shows only real pins (`ok|manual`).
@@ -32,5 +32,7 @@ Replace the fake pins in `/mapa` (`lib/mapPinsOffers.ts`) with real offer locati
 - T2: run 1 ok=5 not_found=33; after fallback ok=5 approximate=16 not_found=17 -> 30 pins, all inside Puebla/CDMX bbox. Remaining 17 have no CP or are not addresses -> admin.
 - T3: delegated writer. RED: new tests failed with ERR_MODULE_NOT_FOUND (map-pins, nav-visibility) and /admin protected-path assertion; GREEN: node --test 16 pass. tsc clean; lint = known baseline (2 errors, 1 warning). /mapa 200 with 30 pins in payload (5 exact, 25 approximate); /admin/ubicaciones without cookie 307 -> /login. api-types regenerated; areaSelected and saved-offer areaSlug query were re-added by hand (running backend lacks them). Admin flow (needs logged-in admin) not verified.
 
+- T4: PRs pp-backend#1, #3 and PPracticaSS#3, #5 merged. Admin flow verified manually by the user (picker pin visible, manual pin saved: 31 pins).
+
 ## Next step
-T4 end-to-end verification (admin flow manual) and PRs.
+Feature done. Follow-ups tracked in `.agents/STAGES.md`.
